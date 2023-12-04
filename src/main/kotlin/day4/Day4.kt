@@ -21,12 +21,8 @@ fun countCards(cardVals: List<Int>): Int {
     var scratchCount = 0
     for (i in cardVals.indices) {
         val v = cardVals[i]
-        for (it in 1..counts[i]) {
-            if (v > 0) {
-                for (h in i + 1..i + v) {
-                    counts[h]++
-                }
-            }
+        for (h in i + 1..i + v) {
+            counts[h]+=counts[i]
         }
         scratchCount += counts[i]
     }
