@@ -33,6 +33,30 @@ fun calcPt2(board: Board): Long {
     return ranges.map { r -> r.start }.min()
 }
 
+// Tried this brute force method later, just to check, and ... yep, runs in only like a minute and a half or so.  Sigh.
+fun calcPt2BruteForce(board: Board): Long {
+    var least = Long.MAX_VALUE
+
+    val maps = (1..<maps.size).map{ i -> board.maps[maps[i-1]+"-to-"+maps[i]] ?: throw Exception("bad") }
+
+    for (i in 0..<board.seeds.size step 2) {
+        val range = board.seeds[i]..<board.seeds[i]+board.seeds[i+1]
+        for (v in range) {
+            var vi = v
+            for (map in maps) {
+                vi = mapList(vi, map)
+            }
+            if (vi < least) {
+                least = vi
+            }
+        }
+        println(least)
+    }
+
+    return least
+}
+
+
 fun calcPt1(board: Board): Long {
     var round = board.seeds
     for (i in 1..<maps.size) {
