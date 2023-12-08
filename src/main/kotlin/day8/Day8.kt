@@ -50,6 +50,7 @@ fun calcPt2(inp: Board): Long {
     return l
 }
 
+// Note: this function shamelessly stolen off stackoverflow
 fun findLCM(a: Long, b: Long): Long {
     val larger = if (a > b) a else b
     val maxLcm = a * b
