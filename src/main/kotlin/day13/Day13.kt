@@ -6,14 +6,14 @@ data class Point(val x: Int, val y: Int)
 
 fun main() {
     println("Part 1:")
-//    for (i in inputs1.indices) {
-//        val sample = inputs1[i]
-//
-//        val board = parsePt1(sample.input)
+    for (i in inputs1.indices) {
+        val sample = inputs1[i]
+
+        val board = parsePt1(sample.input)
 //        println("board: $board")
-//        val sol = calcPt1(board)
-//        println("calced: $sol, Answer: ${sample.answer}, Correct: ${sample.answer == sol}")
-//    }
+        val sol = calcPt1(board)
+        println("calced: $sol, Answer: ${sample.answer}, Correct: ${sample.answer == sol}")
+    }
 
     val board1Mine = parsePt1(inputMine)
     println("Mine: ${calcPt1(board1Mine)}")
