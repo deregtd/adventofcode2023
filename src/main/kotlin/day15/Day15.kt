@@ -37,15 +37,15 @@ fun main() {
 
 fun calcPt1(inp: Board): Long {
     val res = inp.strs.map(::calcHash)
-    return res.sum()
+    return res.sum().toLong()
 }
 
-fun calcHash(inp: String): Long {
-    var hash = 0L
+fun calcHash(inp: String): Int {
+    var hash = 0
     for (c in inp) {
-        hash += c.toLong()
+        hash += c.code
         hash *= 17
-        hash = hash and 255L
+        hash = hash and 255
     }
     return hash
 }
@@ -54,10 +54,7 @@ data class Lens(var label: String, var focalLength: Int)
 data class Box(var lenses: MutableList<Lens>)
 
 fun calcPt2(inp: Board2): Long {
-    var boxes = ArrayList<Box>(256)
-    for (i in 1..256) {
-        boxes.add(Box(ArrayList<Lens>()))
-    }
+    val boxes = MutableList(256) { Box(ArrayList()) }
 
     for (op in inp.ops) {
         val boxNum = calcHash(op.label).toInt()
@@ -76,10 +73,10 @@ fun calcPt2(inp: Board2): Long {
     }
 
     val powers = boxes.mapIndexed { boxNum, box ->
-        box.lenses.mapIndexed { slotNum, l -> (boxNum+1)*(slotNum+1)*l.focalLength }.sum()
+        box.lenses.mapIndexed { slotNum, l -> (boxNum+1)*(slotNum+1)*l.focalLength }
     }
 
-    return powers.sum().toLong()
+    return powers.flatten().sum().toLong()
 }
 
 data class Board(val strs: List<String>)
