@@ -19,8 +19,7 @@ broadcaster -> a
 """.trimIndent(), 11687500)
 )
 
-val inputs2 = listOf(
-    Sample(inputs1[0].input, -1),
+val inputs2 = listOf<Sample>(
 )
 
 val inputMine = """

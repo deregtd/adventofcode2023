@@ -36,7 +36,7 @@ fun calcPt1(inp: Board): Long {
     var lowPulses = 0L
     var highPulses = 0L
     for (i in 1..1000) {
-        val (lp, hp) = pressButton(inp, i)
+        val (lp, hp, _) = pressButton(inp)
         lowPulses += lp
         highPulses += hp
     }
@@ -47,11 +47,12 @@ fun calcPt1(inp: Board): Long {
 data class Pulse(val target: String, val from: String, val isHigh: Boolean)
 
 // short pulses, long pulses
-fun pressButton(inp: Board, cycle: Int): Pair<Long, Long> {
+fun pressButton(inp: Board): Triple<Long, Long, List<String>> {
     val toWork = ArrayList<Pulse>()
     toWork.add(Pulse("broadcaster", "", false))
     var lp = 0L
     var hp = 0L
+    var lxTargets = ArrayList<String>()
     while (toWork.isNotEmpty()) {
         val p = toWork.removeFirst()
 
@@ -61,10 +62,8 @@ fun pressButton(inp: Board, cycle: Int): Pair<Long, Long> {
             lp++
         }
 
-        if (p.target == "lx") {
-            if (p.isHigh) {
-                println("Cycle: $cycle, High From: ${p.from}")
-            }
+        if (p.target == "lx" && p.isHigh) {
+            lxTargets.add(p.from)
         }
 
         val m = inp.modules[p.target]
@@ -97,20 +96,40 @@ fun pressButton(inp: Board, cycle: Int): Pair<Long, Long> {
             }
         }
     }
-    return Pair(lp, hp)
+    return Triple(lp, hp, lxTargets)
 }
 
 fun calcPt2(inp: Board): Long {
     var i = 1
+    val targets = HashMap<String, Int>()
     while (true) {
-        val (_, _) = pressButton(inp, i)
+        val (_, _, lxTargets) = pressButton(inp)
 
-        // Note: This doesn't actually solve it -- I used the printlns from the button function to get the cycles
-        // for the four inputs to rx (cl, lb, rp, nj), and validated that it was a fully repeating cycle for each.
-        // Then simply plugged in the 4 numbers to an LCM calculator on the net and was done.
+        for (lxt in lxTargets) {
+            targets[lxt] = i
+        }
+
+        if (targets.size == 4) {
+            break
+        }
 
         i++
     }
+
+    return targets.values.fold(1) { acc, v -> findLCM(acc, v.toLong()) }
+}
+
+fun findLCM(a: Long, b: Long): Long {
+    val larger = if (a > b) a else b
+    val maxLcm = a * b
+    var lcm = larger
+    while (lcm <= maxLcm) {
+        if (lcm % a == 0L && lcm % b == 0L) {
+            return lcm
+        }
+        lcm += larger
+    }
+    return maxLcm
 }
 
 enum class ModType {
