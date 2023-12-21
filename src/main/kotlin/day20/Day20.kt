@@ -1,6 +1,6 @@
 package day20
 
-data class Point(var x: Int, var y: Int)
+import common.findLCM
 
 fun main() {
     println("Part 1:")
@@ -116,20 +116,7 @@ fun calcPt2(inp: Board): Long {
         i++
     }
 
-    return targets.values.fold(1) { acc, v -> findLCM(acc, v.toLong()) }
-}
-
-fun findLCM(a: Long, b: Long): Long {
-    val larger = if (a > b) a else b
-    val maxLcm = a * b
-    var lcm = larger
-    while (lcm <= maxLcm) {
-        if (lcm % a == 0L && lcm % b == 0L) {
-            return lcm
-        }
-        lcm += larger
-    }
-    return maxLcm
+    return findLCM(targets.values.map { v -> v.toLong() })
 }
 
 enum class ModType {
