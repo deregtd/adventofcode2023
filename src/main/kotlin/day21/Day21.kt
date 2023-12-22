@@ -1,7 +1,7 @@
 package day21
 
 import common.Cycle
-import common.Point
+import common.Point2
 import common.findCycle
 import kotlin.math.ceil
 import kotlin.math.max
@@ -38,11 +38,11 @@ fun main() {
 }
 
 fun calcPt1(inp: Board, steps: Int): Long {
-    var set = hashSetOf<Point>(inp.start)
+    var set = hashSetOf<Point2>(inp.start)
     for (i in 1..steps) {
-        val nextStep = HashSet<Point>()
+        val nextStep = HashSet<Point2>()
         for (pt in set) {
-            val ptc = listOf(Point(pt.x-1, pt.y), Point(pt.x+1, pt.y), Point(pt.x, pt.y-1), Point(pt.x, pt.y+1))
+            val ptc = listOf(Point2(pt.x-1, pt.y), Point2(pt.x+1, pt.y), Point2(pt.x, pt.y-1), Point2(pt.x, pt.y+1))
             for (ptn in ptc) {
                 if (ptn.x < 0 || ptn.x >= inp.b[0].size || ptn.y < 0 || ptn.y >= inp.b.size || inp.b[ptn.y][ptn.x]) {
                     continue
@@ -74,22 +74,22 @@ class PredictiveBoard(val gridSize: Int, val firstNums: List<Int>, val preCycles
         println("left: $leftStep, up: $upStep, right: $rightStep, down: $downStep")
     }
 
-    private fun getCycleForBoard(board: Point): Cycle {
-        val basePt = Point(max(-3,min(3, board.x)), max(-3,min(3, board.y)))
+    private fun getCycleForBoard(board: Point2): Cycle {
+        val basePt = Point2(max(-3,min(3, board.x)), max(-3,min(3, board.y)))
         return cycles[(basePt.y+halfGrid) * gridSize + (basePt.x+halfGrid)]
     }
 
-    private fun getPreCycleForBoard(board: Point): List<Int> {
-        val basePt = Point(max(-3,min(3, board.x)), max(-3,min(3, board.y)))
+    private fun getPreCycleForBoard(board: Point2): List<Int> {
+        val basePt = Point2(max(-3,min(3, board.x)), max(-3,min(3, board.y)))
         return preCycles[(basePt.y+halfGrid) * gridSize + (basePt.x+halfGrid)]
     }
 
-    private fun getFirstNumForBoard(board: Point): Int {
+    private fun getFirstNumForBoard(board: Point2): Int {
         if (board.x in -2..2 && board.y in -2..2) {
             return firstNums[(board.y+halfGrid) * gridSize + (board.x+halfGrid)]
         }
 
-        val basePt = Point(max(-2,min(2, board.x)), max(-2,min(2, board.y)))
+        val basePt = Point2(max(-2,min(2, board.x)), max(-2,min(2, board.y)))
         var base = getFirstNumForBoard(basePt)
 
         if (board.x > basePt.x) {
@@ -107,7 +107,7 @@ class PredictiveBoard(val gridSize: Int, val firstNums: List<Int>, val preCycles
         return base
     }
 
-    fun getCountForBoard(board: Point, steps: Int): Int {
+    fun getCountForBoard(board: Point2, steps: Int): Int {
         val firstNum = getFirstNumForBoard(board)
         if (steps < firstNum) {
             return 0
@@ -121,28 +121,28 @@ class PredictiveBoard(val gridSize: Int, val firstNums: List<Int>, val preCycles
     }
 
     // Min X/Y, Max X/Y
-    fun getBoardExtent(steps: Int): Pair<Point, Point> {
-        val tl = Point(-3,-3)
+    fun getBoardExtent(steps: Int): Pair<Point2, Point2> {
+        val tl = Point2(-3,-3)
 
-        val tBase = getFirstNumForBoard(Point(0,-3))
+        val tBase = getFirstNumForBoard(Point2(0,-3))
         if (steps >= tBase) {
             val boards = ceil((steps - tBase).toFloat() / upStep).toInt()
             tl.y -= boards
         }
-        val lBase = getFirstNumForBoard(Point(-3,0))
+        val lBase = getFirstNumForBoard(Point2(-3,0))
         if (steps >= lBase) {
             val boards = ceil((steps - lBase).toFloat() / leftStep).toInt()
             tl.x -= boards
         }
 
-        val br = Point(3,3)
+        val br = Point2(3,3)
 
-        val bBase = getFirstNumForBoard(Point(0,3))
+        val bBase = getFirstNumForBoard(Point2(0,3))
         if (steps >= bBase) {
             val boards = ceil((steps - bBase).toFloat() / downStep).toInt()
             br.y += boards
         }
-        val rBase = getFirstNumForBoard(Point(3,0))
+        val rBase = getFirstNumForBoard(Point2(3,0))
         if (steps >= rBase) {
             val boards = ceil((steps - rBase).toFloat() / rightStep).toInt()
             br.x += boards
@@ -157,7 +157,7 @@ class PredictiveBoard(val gridSize: Int, val firstNums: List<Int>, val preCycles
         var count = 0L
         for (y in tl.y..br.y) {
             for (x in tl.x..br.x) {
-                val subCount = getCountForBoard(Point(x,y), steps)
+                val subCount = getCountForBoard(Point2(x,y), steps)
                 count += subCount
             }
         }
@@ -174,11 +174,11 @@ fun calcPt2(inp: Board, steps: Int): Long {
     val preCycles = MutableList<List<Int>?>(gridSize*gridSize) { null }
     val cycles = MutableList<Cycle?>(gridSize*gridSize) { null }
 
-    var set = hashSetOf<Point>(inp.start)
+    var set = hashSetOf<Point2>(inp.start)
     for (i in 1..steps) {
-        val nextStep = HashSet<Point>()
+        val nextStep = HashSet<Point2>()
         for (pt in set) {
-            val ptc = listOf(Point(pt.x-1, pt.y), Point(pt.x+1, pt.y), Point(pt.x, pt.y-1), Point(pt.x, pt.y+1))
+            val ptc = listOf(Point2(pt.x-1, pt.y), Point2(pt.x+1, pt.y), Point2(pt.x, pt.y-1), Point2(pt.x, pt.y+1))
             for (ptn in ptc) {
                 val xc = smod(ptn.x, inp.b[0].size)
                 val yc = smod(ptn.y, inp.b.size)
@@ -233,13 +233,13 @@ fun smod(v: Int, mod: Int): Int {
     return if (mp == 0) { 0 } else { mod - mp }
 }
 
-data class Board(val b: List<List<Boolean>>, val start: Point)
+data class Board(val b: List<List<Boolean>>, val start: Point2)
 
 fun parsePt1(inp: String): Board {
-    var start = Point(-1,-1)
+    var start = Point2(-1,-1)
     val b = inp.split("\n").mapIndexed { y, r -> r.mapIndexed { x, c ->
         if (c == 'S') {
-            start = Point(x, y)
+            start = Point2(x, y)
         }
         c == '#'
     }}
