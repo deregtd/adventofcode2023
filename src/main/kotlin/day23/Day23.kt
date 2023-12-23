@@ -73,7 +73,7 @@ fun calcPt(inp: Board, pt2: Boolean = false): Long {
         if (lastPt == finish) {
             if (walk.steps > bestFinish) {
                 bestFinish = walk.steps
-                println("Finish: ${walk.steps}, Cache: ${walkLooks.size}")
+                println("Finish: ${walk.steps}, Intersections: ${walk.intersections.size}, Cache: ${walkLooks.size}")
             }
             continue
         }

@@ -190,6 +190,9 @@ fun calcPt2(inp: Board, steps: Int): Long {
         }
         set = nextStep
         overallTotals.add(set.size)
+        if (((i - 65) % 131) == 0) {
+            println("Step,Count: $i,${set.size}")
+        }
 
         for (y in -halfGrid..halfGrid) {
             for (x in -halfGrid..halfGrid) {
