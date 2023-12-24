@@ -1,8 +1,14 @@
 package common
 
-data class Point3(var x: Int, var y: Int, var z: Int) {
+data class Point3(var x: Long, var y: Long, var z: Long) {
     fun clone(): Point3 {
         return Point3(x, y, z)
+    }
+}
+
+data class Point3f(var x: Double, var y: Double, var z: Double) {
+    fun clone(): Point3f {
+        return Point3f(x, y, z)
     }
 }
 

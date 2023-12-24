@@ -82,7 +82,7 @@ fun whichBricksCanMoveDown(inp: Board, doAllValidMoves: Boolean): HashSet<Int> {
         // check if brick can move down
         var foundBlock = false
         brick.forAllPoints { p ->
-            if ((p.z == 1) || (inp.get(Point3(p.x, p.y, p.z-1)) != -1)) {
+            if ((p.z == 1L) || (inp.get(Point3(p.x, p.y, p.z-1)) != -1)) {
                 foundBlock = true
             }
             brick.axis != Axis.Z
@@ -178,39 +178,39 @@ data class Brick(val ends: Pair<Point3, Point3>, val axis: Axis) {
 
 data class Board(var bricks: List<Brick>) {
     val bounds: Pair<Point3, Point3> = extents(bricks.map { r -> r.ends.toList() }.flatten())
-    private val xMult = 1
+    private val xMult = 1L
     private val yMult = (bounds.second.x-bounds.first.x+1)
     private val zMult = yMult * (bounds.second.y-bounds.first.y+1)
-    private var board = MutableList<Int>(zMult*(bounds.second.z-bounds.first.z+1)) { -1 }
+    private var board = MutableList((zMult*(bounds.second.z-bounds.first.z+1L)).toInt()) { -1L }
 
-    fun save(): Pair<List<Brick>,MutableList<Int>> {
+    fun save(): Pair<List<Brick>,MutableList<Long>> {
         return Pair(ArrayList(bricks.map { br -> br.clone()}),ArrayList(board))
     }
 
-    fun restore(b: Pair<List<Brick>,MutableList<Int>>) {
+    fun restore(b: Pair<List<Brick>,MutableList<Long>>) {
         bricks = ArrayList(b.first.map { br -> br.clone() })
         board = ArrayList(b.second)
     }
 
     fun get(p: Point3): Int {
-        return board[(p.x - bounds.first.x)*xMult + (p.y-bounds.first.y)*yMult + (p.z-bounds.first.z)*zMult]
+        return board[((p.x - bounds.first.x)*xMult + (p.y-bounds.first.y)*yMult + (p.z-bounds.first.z)*zMult).toInt()].toInt()
     }
 
     fun set(p: Point3, v: Int) {
-        board[(p.x - bounds.first.x)*xMult + (p.y-bounds.first.y)*yMult + (p.z-bounds.first.z)*zMult] = v
+        board[((p.x - bounds.first.x)*xMult + (p.y-bounds.first.y)*yMult + (p.z-bounds.first.z)*zMult).toInt()] = v.toLong()
     }
 
     fun print() {
-        board.chunked(zMult).forEachIndexed { z, zr ->
+        board.chunked(zMult.toInt()).forEachIndexed { z, zr ->
             println("z $z:")
-            zr.chunked(yMult).forEach { y -> println(y) }
+            zr.chunked(yMult.toInt()).forEach { y -> println(y) }
         }
     }
 }
 
 fun parsePt1(inp: String): Board {
     return Board(inp.split("\n").map{ r ->
-        val sp = r.split("~").map { v -> v.split(",").map { vv -> vv.toInt() }}.map { vi -> Point3(vi[0], vi[1], vi[2]) }
+        val sp = r.split("~").map { v -> v.split(",").map { vv -> vv.toLong() }}.map { vi -> Point3(vi[0], vi[1], vi[2]) }
         val axis = when {
             sp[0].x != sp[1].x -> Axis.X
             sp[0].y != sp[1].y -> Axis.Y
